@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     
     let db = Database.database().reference()
     
+    var customers: [Customer] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         updateLabel()
@@ -36,6 +38,37 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func createCustomer(_ sender: UIButton) {
+        saveCustomers()
+    }
+    
+    @IBAction func fetchCustomer(_ sender: UIButton) {
+        fetchCustomers()
+    }
+    
+    func updateCustomers() {
+        guard customers.isEmpty == false else {return}
+        
+        self.customers[0].name = "Min"
+        let dictionary = self.customers.map{$0.toDictionary}
+        
+        db.updateChildValues(["customers" : dictionary])
+        
+    }
+    
+    @IBAction func updateCustomer(_ sender: UIButton) {
+        updateCustomers()
+    }
+    
+    func deleteCustomers() {
+        db.child("customers").removeValue()
+    }
+    
+    @IBAction func deleteCustomer(_ sender: UIButton) {
+        deleteCustomers()
+    }
+    
 }
 
 extension ViewController {
@@ -46,6 +79,7 @@ extension ViewController {
                 let data = try JSONSerialization.data(withJSONObject: snapshot.value, options: [])
                 let decoder = JSONDecoder()
                 let customers: [Customer] = try decoder.decode([Customer].self, from: data)
+                self.customers = customers
                 DispatchQueue.main.async {
                     self.countLabel.text = "\(customers.count)"
                 }
@@ -97,7 +131,7 @@ extension ViewController {
 
 struct Customer: Codable {
     let id: String
-    let name: String
+    var name: String
     let books: [Book]
     
     var toDictionary: [String : Any] {
