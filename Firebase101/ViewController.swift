@@ -19,9 +19,12 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         updateLabel()
         
-//        saveBasicTypes()
+        saveBasicTypes()
 //        saveCustomers()
         fetchCustomers()
+//        updateBasicTypes()
+//        deleteBasicTypes()
+        
     }
 
     func updateLabel(){
@@ -74,6 +77,21 @@ extension ViewController {
         db.child("customers").child(customer1.id).setValue(customer1.toDictionary)
         db.child("customers").child(customer2.id).setValue(customer2.toDictionary)
         db.child("customers").child(customer3.id).setValue(customer3.toDictionary)
+    }
+}
+
+extension ViewController {
+    func updateBasicTypes() {
+        db.updateChildValues(["int" : 6])
+        db.updateChildValues(["double" : 4.5])
+        db.updateChildValues(["str" : "best"])
+        
+    }
+    
+    func deleteBasicTypes() {
+        db.child("int").removeValue()
+        db.child("double").removeValue()
+        db.child("str").removeValue()
     }
 }
 
